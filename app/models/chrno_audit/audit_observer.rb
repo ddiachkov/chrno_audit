@@ -9,6 +9,14 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
     []
   end
 
+  ##
+  # Добавляет обзервер к заданной модели.
+  # @param [Class] model модель
+  #
+  def self.attach( model )
+    self.instance.send :add_observer!, model
+  end
+
   # Создаёт запись о создании сущности.
   def after_create( entity )
     create_audit_record! entity, :create

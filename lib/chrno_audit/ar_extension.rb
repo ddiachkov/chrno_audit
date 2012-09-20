@@ -1,4 +1,7 @@
 # encoding: utf-8
+require "chrno_audit/audit_record"
+require "chrno_audit/audit_observer"
+
 module ChrnoAudit
 
   # Расширение для ActiveRecord.
@@ -34,7 +37,7 @@ module ChrnoAudit
         has_many :audit_records, as: :auditable, class_name: "ChrnoAudit::AuditRecord"
 
         # Добавляем обсервер
-        add_observer ChrnoAudit::AuditObserver.instance
+        ChrnoAudit::AuditObserver.attach( self )
 
         # Добавляем необходимые параметры
         cattr_accessor :auditable_fields, :auditable_actions, :auditable_context
@@ -58,13 +61,13 @@ module ChrnoAudit
             # Всегда выкидываем timestamp и id.
             column_names - %W{ id created_at updated_at } - options[ :except ]
           else
-            fields - options[ :except ]
+            ( fields - options[ :except ] ).map( &:to_s )
           end
 
         self.auditable_actions = options[ :when ]
         self.auditable_context = options[ :context ]
 
-        # Ворнинги
+        # Проверки
         Rails.logger.warn "Audit: no fields to audit" if self.auditable_fields.empty?
         Rails.logger.warn "Audit: no actions to audit" if self.auditable_actions.empty?
       end

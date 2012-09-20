@@ -13,6 +13,6 @@ Gem::Specification.new do |s|
   s.files         = Dir[ "*", "lib/**/*" ]
   s.require_paths = [ "lib" ]
 
-  s.add_runtime_dependency "rails", ">= 3.0"
-  s.add_runtime_dependency "activerecord", ">= 3.0"
+  s.add_runtime_dependency "rails", ">= 3.1"
+  s.add_runtime_dependency "activerecord", ">= 3.1"
 end

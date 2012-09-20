@@ -13,13 +13,30 @@ class ChrnoAudit::AuditRecord < ActiveRecord::Base
   belongs_to :auditable, polymorphic: true
 
   # Изменения
-  serialize :diff
+  serialize :diff, ChrnoAudit.config.serializer || Object
 
   # Контекст
-  serialize :context
+  serialize :context, ChrnoAudit.config.serializer || Object
 
   # Возвращает записи для заданного типа сущности.
-  scope :for, -> type { where( auditable_type: type ) }
+  scope :for_type, -> *types { where( auditable_type: types.map { |t| t.class.model_name } ) }
+
+  # Возвращает записи для заданных моделей.
+  scope :for, -> *records {
+    t = self.arel_table
+
+    # Логи для заданных записей
+    conditions = records.map do |record|
+      t.where( t[ :auditable_type ].eq( record.class.model_name )) \
+       .where( t[ :auditable_id ].eq( record.id )) \
+       .project( t[ :id ] )
+    end
+
+    # Джойним результаты с помощью UNION ALL
+    query = conditions.inject { |c1, c2| c1.union( :all, c2 ) }
+
+    where( "audit_log.id IN (#{query.to_sql})" )
+  }
 
   # Возвращает записи заданного типа.
   scope :with_action, -> action { where( action: action ) }
