@@ -26,7 +26,7 @@ class ChrnoAudit::AuditRecord < ActiveRecord::Base
     t = self.arel_table
 
     # Логи для заданных записей
-    conditions = records.map do |record|
+    conditions = records.compact.map do |record|
       t.where( t[ :auditable_type ].eq( record.class.model_name )) \
        .where( t[ :auditable_id ].eq( record.id )) \
        .project( t[ :id ] )
