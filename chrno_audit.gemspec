@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.homepage = "https://github.com/ddiachkov/chrno_audit"
   s.summary  = "Simple ActiveRecord audit system"
 
-  s.files         = Dir[ "*", "lib/**/*" ]
+  s.files         = Dir[ "*", "app/**/*", "lib/**/*" ]
   s.require_paths = [ "lib" ]
 
   s.add_runtime_dependency "rails", ">= 3.1"

@@ -1,7 +1,4 @@
 # encoding: utf-8
-require "chrno_audit/audit_record"
-require "chrno_audit/audit_observer"
-
 module ChrnoAudit
 
   # Расширение для ActiveRecord.
