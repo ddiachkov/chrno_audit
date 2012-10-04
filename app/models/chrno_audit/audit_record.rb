@@ -4,7 +4,7 @@
 # Сущность "запись лога".
 #
 class ChrnoAudit::AuditRecord < ActiveRecord::Base
-  set_table_name "audit_log"
+  self.table_name = "audit_log"
 
   # Кто изменил?
   belongs_to :initiator, polymorphic: true
