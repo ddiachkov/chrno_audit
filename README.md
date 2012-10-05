@@ -6,7 +6,7 @@
 
 Добавьте в Gemfile:
 
-```console
+```ruby
 gem 'chrno_audit'
 ```
 
@@ -53,7 +53,17 @@ class Page < ActiveRecord::Base
 end
 ```
 
-Параметр `:context` устанавливает хеш вида { block_name: block, [another_block_name: another_block]}, который исполняется в контексте контроллера и чей результат выполнения записывается в поле context таблицы audit_log (по умолчанию это ChrnoAudit.config.default_context):
+Параметр `:context` принимает в качестве своего значения хеш следующего вида:
+
+```ruby
+{
+  block_name:        block,
+  another_block_name: another_block
+  ...
+}
+```
+
+Все блоки исполняются в контексте контроллера и результат их выполнения записывается в поле context таблицы audit_log (по умолчанию это ChrnoAudit.config.default_context). Пример использования:
 
 ```ruby
 class Page < ActiveRecord::Base
