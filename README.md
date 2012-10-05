@@ -69,7 +69,7 @@ end
 class Page < ActiveRecord::Base
   audit :all, :context => {
       ip:         -> { request.remote_addr },
-      :some_value -> { "value" }
+      some_value: -> { "value" }
     }
 end
 ```
