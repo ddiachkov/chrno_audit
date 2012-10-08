@@ -10,8 +10,7 @@
 
     @pages = ChrnoAudit::AuditRecord.for( @page ) \
                                      .order( "audit_log.created_at DESC" ) \
-                                     .includes( :initiator ) \
-                                     .page params[ :page ]
+                                     .includes( :initiator )
   end
 
 А эту строку необходимо добавить в модель (подробнее тут https://github.com/Undev/chrno_audit/tree/docs#Пример-использования):

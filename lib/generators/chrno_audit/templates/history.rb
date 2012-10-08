@@ -47,7 +47,11 @@
 
   <tfoot>
     <tr>
-      <td colspan="5"><%%= paginate @<%= plural_name %> %></td>
+      <td colspan="5">
+        <%% if defined? paginate %>
+          <%%= paginate @<%= plural_name %> %>
+        <%% end %>
+      </td>
     </tr>
   </tfoot>
 </table>
