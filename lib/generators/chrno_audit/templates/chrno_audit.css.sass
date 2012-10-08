@@ -1,0 +1,42 @@
+.chrno-table
+  tr
+    border-bottom: 1px solid grey
+  td
+    text-align: left
+    padding-left: 10px
+
+
+.diff
+  dt
+    margin-bottom: 5px
+  dd
+    margin-bottom: 10px
+
+  del, ins
+    display: block
+    text-decoration: none
+    padding: 3px
+    font-size: 12px
+    line-height: 12px
+    font-family: monospace
+    white-space: nowrap
+    max-width: 400px
+    overflow: hidden
+    text-overflow: ellipsis
+
+  del
+    background-color: #fdd
+  ins
+    background-color: #dfd
+
+  del:before
+    content: "-\00a0"
+  ins:before
+    content: "+\00a0"
+
+.context
+  list-style: none
+  margin: 0
+
+  li
+    color: #333

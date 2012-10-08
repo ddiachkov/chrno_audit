@@ -1,0 +1,16 @@
+
+============================================================================
+
+Ура! Всё готово! Осталось только добавить немного кода.
+
+Вот пример кода, который может использоваться в контроллере:
+
+  def history$
+    @page = Page.find params[:id]$
+
+    @pages = ChrnoAudit::AuditRecord.for( @page ) \
+                                     .order( "audit_log.created_at DESC" ) \
+                                     .includes( :initiator ) \
+                                     .page params[ :page ]
+  end
+
