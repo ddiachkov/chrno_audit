@@ -43,7 +43,7 @@ rails g chrno_audit:view page
   chrno_audit_for :pages
 ```
 
-3) Выведет инструкции с дальнейшими действиями. Посмотрите их прежде чем читать дальше. Например тут[https://raw.github.com/Undev/chrno_audit/views/lib/generators/chrno_audit/templates/README].
+3) Выведет инструкции с дальнейшими действиями. Посмотрите их прежде чем читать дальше. Например [тут](https://raw.github.com/Undev/chrno_audit/views/lib/generators/chrno_audit/templates/README).
 
 После установки в моделях становится доступен единственный метод `audit(*params)`, подключающий модель к системе аудита. В качестве параметров методу audit можно передавать список полей для аудита (по умолчанию все), например:
 
