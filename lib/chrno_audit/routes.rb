@@ -1,14 +1,16 @@
 module ChrnoAudit
   module RouteHelpers
-    def chrno_audit_for(*resources)
-      options = resources.extract_options!
+    def chrno_audit(*options)
+      unless resource_scope?
+        raise ArgumentError, "can't use chrno_audit outside resource(s) scope"
+      end
+
+      options = options.extract_options!
 
       options[:action] ||= "history"
-      resources.map!(&:to_sym)
 
-      resources.each do |resource|
-        as = ( options[:as] || "#{resource.to_s.singularize}_#{options[:action]}" ).to_sym
-        get "#{resource}/:id/#{options[:action]}" => "#{resource}##{options[:action]}", as: as
+      member do
+        get options[:action]
       end
     end
   end

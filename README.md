@@ -21,26 +21,26 @@ rake db:migrate
 
 ## Пример использования:
 
-Допустим вы хотите применить chrno_audit для аудита модели Page. Для этого необзодимо запустить специальный rails generatorкак показано ниже:
+Допустим вы хотите применить chrno_audit для аудита модели Page. Для этого необзодимо запустить rails generator:
 
 ```console
-rails g chrno_audit:view MODEL
+rails g chrno_audit MODEL
 ```
 
 Допустим вы запустили эту команду так:
 
 ```console
-rails g chrno_audit:view page
+rails g chrno_audit page
 ```
 
-В результате эта команда проведет следующие манипуляции:
+В результате эта команда проделает следующие манипуляции:
 
 1) Скопирует пример view-файла в папку app/views/pages/history и файл стилей в app/assets/stylesheets/shared/chrno_audit.css.sass.
 
 2) Создаст запись в routes.rb следующего вида:
 
 ```ruby
-  chrno_audit_for :pages
+  resources :pages do chrno_audit end
 ```
 
 3) Выведет инструкции с дальнейшими действиями. Посмотрите их прежде чем читать дальше. Например [тут](https://raw.github.com/Undev/chrno_audit/views/lib/generators/chrno_audit/templates/README).
