@@ -17,6 +17,10 @@ module ChrnoAudit
       copy_file "initializer.rb", "config/initializers/chrno_audit.rb"
     end
 
+    def show_readme
+      readme "README"
+    end
+
     private
 
     include Rails::Generators::Migration

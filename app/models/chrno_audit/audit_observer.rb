@@ -15,6 +15,7 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
   #
   def self.attach( model )
     self.instance.send :add_observer!, model
+    ChrnoAudit.models[model.model_name] = model
   end
 
   # Создаёт запись о создании сущности.

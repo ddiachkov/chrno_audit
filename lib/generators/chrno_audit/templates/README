@@ -6,15 +6,16 @@
 Вот пример кода, который может использоваться в контроллере:
 
   def history$
-    @page = Page.find params[:id]$
+    @page = Page.find params[:id]
 
     @pages = ChrnoAudit::AuditRecord.for( @page ) \
                                      .order( "audit_log.created_at DESC" ) \
                                      .includes( :initiator )
   end
 
-А эту строку необходимо добавить в модель (подробнее тут https://github.com/Undev/chrno_audit/tree/docs#Пример-использования):
+Чтобы подключить модель к системе аудита эту строку необходимо добавить в файл модели:
 
   audit :all
 
 Have fun!
+https://github.com/Undev/chrno_audit/tree/docs#Пример-использования

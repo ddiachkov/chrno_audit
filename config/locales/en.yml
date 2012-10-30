@@ -1,0 +1,4 @@
+en:
+  chrno_audit:
+    model_not_found: "Couldn't find model \"%{model_name}\"."
+    record_not_found: "Couldn't find %{model_name} with %{attr_name}=%{attr_value}"

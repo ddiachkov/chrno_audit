@@ -2,7 +2,12 @@
 
 require "chrno_audit/routes"
 
-ChrnoAudit.configure do |config|
-  config.default_context = { ip: -> { request.remote_addr }}
+ChrnoAudit.setup do |config|
+#  config.default_context = { ip: -> { request.remote_addr }}
+#  config.default_layout = :application
+#  config.layouts = {
+#    index:
+#    model:
+#    history:
+#  }
 end
-

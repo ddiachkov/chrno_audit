@@ -1,5 +1,5 @@
 module ChrnoAudit
-  module RouteHelpers
+  module Routes
     def chrno_audit(*options)
       unless resource_scope?
         raise ArgumentError, "can't use chrno_audit outside resource(s) scope"
@@ -16,4 +16,4 @@ module ChrnoAudit
   end
 end
 
-ActionDispatch::Routing::Mapper.send(:include, ChrnoAudit::RouteHelpers)
+ActionDispatch::Routing::Mapper.send(:include, ChrnoAudit::Routes)
