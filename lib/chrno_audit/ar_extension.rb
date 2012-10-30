@@ -30,6 +30,12 @@ module ChrnoAudit
       #     audit :all, except: :foo, context: { ip: -> { request.remote_addr } }
       #
       def audit( *fields )
+        # Если таблицы ещё нет, ничего не делаем
+        unless table_exists?
+          Rails.logger.warn "Audit: try to audit model [#{name}] with non-existent table"
+          return
+        end
+
         # Добавляем связь
         has_many :audit_records, as: :auditable, class_name: "ChrnoAudit::AuditRecord"
 

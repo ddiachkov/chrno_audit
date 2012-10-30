@@ -11,16 +11,14 @@ module ChrnoAudit
       before_filter :store_audit_context
     end
 
-    module InstanceMethods
-      ##
-      # Сохраняет в Thread.current необходимые для аудита данные.
-      #
-      def store_audit_context
-        Thread.current[ :audit_context ] = {
-          :current_user => self.try( :current_user ),
-          :controller   => self # OMG! OMG!
-        }
-      end
+    ##
+    # Сохраняет в Thread.current необходимые для аудита данные.
+    #
+    def store_audit_context
+      Thread.current[ :audit_context ] = {
+        :current_user => self.try( :current_user ),
+        :controller   => self # OMG! OMG!
+      }
     end
   end
 end
