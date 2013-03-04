@@ -1,9 +1,0 @@
-<%= @model.model_name %>
-<br>
-<%= @model.auditable_fields %>
-<br>
-<% @model.all.each do |object| %>
-  <%= object.id %>
-  <%= link_to "view its history", chrno_audit.history_path(@model.model_name.underscore, :id, object.id) %>
-  <br>
-<% end %>

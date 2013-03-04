@@ -1,8 +1,0 @@
-<% ChrnoAudit.models.each do |model_name, model| %>
-  <%= link_to model_name, chrno_audit.model_path(model_name.underscore) %>.
-  Auditable fields:
-  <% model.auditable_fields.each do |field_name| %>
-    <%= field_name %>
-  <% end %>
-  <br>
-<% end %>
