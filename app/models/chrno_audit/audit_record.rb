@@ -4,13 +4,14 @@
 # Сущность "запись лога".
 #
 class ChrnoAudit::AuditRecord < ActiveRecord::Base
-  self.table_name = "audit_log"
+  # Имя таблицы с логами
+  self.table_name = ChrnoAudit.config.table_name || "audit_log"
 
   # Кто изменил?
-  belongs_to :initiator, polymorphic: true
+  belongs_to :initiator, :polymorphic => true
 
   # Что изменил?
-  belongs_to :auditable, polymorphic: true
+  belongs_to :auditable, :polymorphic => true
 
   # Изменения
   serialize :diff, ChrnoAudit.config.serializer || Object
@@ -19,7 +20,7 @@ class ChrnoAudit::AuditRecord < ActiveRecord::Base
   serialize :context, ChrnoAudit.config.serializer || Object
 
   # Возвращает записи для заданного типа сущности.
-  scope :for_type, -> *types { where( auditable_type: types.map { |t| t.class.model_name } ) }
+  scope :for_type, -> *types { where( auditable_type: types.map { |t| t.class.model_name })}
 
   # Возвращает записи для заданных моделей.
   scope :for_object, -> *records {
@@ -35,7 +36,8 @@ class ChrnoAudit::AuditRecord < ActiveRecord::Base
     # Джойним результаты с помощью UNION ALL
     query = conditions.inject { |c1, c2| c1.union( :all, c2 ) }
 
-    where( "audit_log.id IN (#{query.to_sql})" )
+    # Результирующий запрос
+    where( t[ :id ].in query )
   }
 
   # Возвращает записи заданного типа.

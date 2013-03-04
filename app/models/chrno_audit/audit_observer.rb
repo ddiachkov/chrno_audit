@@ -44,7 +44,9 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
     # Ничего не делаем, если аудит данного действия отключён
     return unless entity.class.auditable_actions.include? action
 
+    # Получаем изменения и контекст
     changes_to_store = get_changes( entity )
+    context = get_context.with_indifferent_access
 
     # Ничего не делаем если модель не изменилась
     return if changes_to_store.empty? and action != :destroy
@@ -53,18 +55,9 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
       record.action    = action.to_s
       record.auditable = entity
       record.diff      = changes_to_store
-      record.initiator = audit_context[ :current_user ]
-      record.context   = generate_ar_context( entity, audit_context[ :controller ] )
+      record.initiator = context.delete( :initiator ) || context.delete( :current_user )
+      record.context   = context
     end
-  end
-
-  ##
-  # Возвращает текущий контекст для аудита.
-  # @see [ChrnoAudit::DirtySecret]
-  # @return [Hash]
-  #
-  def audit_context
-    Thread.current[ :audit_context ] || {}
   end
 
   ##
@@ -77,20 +70,13 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
   end
 
   ##
-  # Формирует контекст записи используя контекст контроллера.
-  # @param [ActiveRecord::Base] entity
-  # @param [ActionController::Base] controller
+  # Возвращает текущий контекст для аудита.
   # @return [Hash]
   #
-  def generate_ar_context( entity, controller )
-    entity.class.auditable_context.inject( {} ) do |result, (name,value)|
-      begin
-        result[ name.to_s ] = controller.instance_exec( &value )
-      rescue Exception => e
-        Rails.logger.error "Audit: can't retrieve context item: #{e}"
-      end
-
-      result
+  def get_context
+    ( Thread.current[ :audit_context ].respond_to?( :call ) ? Thread.current[ :audit_context ].call : {} ).tap do |context|
+      # Проверяем, что контекст это хеш
+      raise "Invalid audit context: Hash expected, got: #{context.inspect}" if context && !context.is_a?( Hash )
     end
   end
 end

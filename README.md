@@ -7,7 +7,7 @@
 Добавьте в Gemfile:
 
 ```ruby
-gem 'chrno_audit'
+gem "chrno_audit"
 ```
 
 и запустите `bundle install`. Затем нужно будет сгенерировать необходимые для работы файлы и создать таблицы в БД:
@@ -19,33 +19,11 @@ rake db:migrate
 
 Помните, что необходимо перезапустить приложение, если оно уже запущено.
 
-## Пример использования:
+## Пример использования
 
-Допустим вы хотите применить chrno_audit для аудита модели Page. Для этого необзодимо запустить rails generator:
+### Модель
 
-```console
-rails g chrno_audit MODEL
-```
-
-Допустим вы запустили эту команду так:
-
-```console
-rails g chrno_audit page
-```
-
-В результате эта команда проделает следующие манипуляции:
-
-1) Скопирует пример view-файла в папку app/views/pages/history и файл стилей в app/assets/stylesheets/shared/chrno_audit.css.sass.
-
-2) Создаст запись в routes.rb следующего вида:
-
-```ruby
-  resources :pages do chrno_audit end
-```
-
-3) Выведет инструкции с дальнейшими действиями. Посмотрите их прежде чем читать дальше. Например [тут](https://raw.github.com/Undev/chrno_audit/views/lib/generators/chrno_audit/templates/README).
-
-После установки в моделях становится доступен единственный метод `audit(*params)`, подключающий модель к системе аудита. В качестве параметров методу audit можно передавать список полей для аудита (по умолчанию все), например:
+После установки джема в моделях становится доступен метод `audit( *params )`, подключающий модель к системе аудита. В качестве параметров методу audit можно передавать список полей для аудита (по умолчанию все), например:
 
 ```ruby
 class Page < ActiveRecord::Base
@@ -69,31 +47,56 @@ class Page < ActiveRecord::Base
 end
 ```
 
-Помимо действий, которые подвергаются аудиту по умолчанию (create, update, destroy) можно указать свои:
+Можно указать список действий для аудита (create, update, destroy):
 
 ```ruby
 class Page < ActiveRecord::Base
-  audit :all, :when => [ :convert ]
+  audit :all, :when => [ :create ]
 end
 ```
 
-Параметр `:context` принимает в качестве своего значения хеш следующего вида:
+### Контроллер
+
+После установки джема в контроллерах становятся доступны следующие методы:
+  * `audit_context( proc_or_symbol = nil, &block )`: задаёт контекст аудита;
+  * `create_audit_record!( context = {}, initiator = nil )`: создаёт запись в логе для текущего экшена;
+
+Cохраняем в контексте текущего пользователя и его IP:
 
 ```ruby
-{
-  block_name:        block,
-  another_block_name: another_block
-  ...
-}
-```
-
-Все блоки исполняются в контексте контроллера и результат их выполнения записывается в поле context таблицы audit_log (по умолчанию это ChrnoAudit.config.default_context). Пример использования:
-
-```ruby
-class Page < ActiveRecord::Base
-  audit :all, :context => {
-      ip:         -> { request.remote_addr },
-      some_value: -> { "value" }
-    }
+class ApplicationController < ActionController::Base
+  audit_context -> {{ ip: request.remote_addr, current_user: current_user }}
 end
 ```
+
+_NB:_ блок исполняется в контексте контроллера и обязан возврашать хеш!
+
+Используем метод для генерации контекста:
+
+```ruby
+class ApplicationController < ActionController::Base
+  audit_context :generate_context
+
+  def generate_context
+    { ip: request.remote_addr }
+  end
+end
+
+class MyController < ApplicationController
+  def generate_context
+    super.merge { foo: "bar" }
+  end
+end
+```
+
+Генерируем запись в аудит-логе:
+
+```ruby
+...
+def some_action
+  create_audit_record!({ foo: "bar" }, current_user )
+end
+...
+```
+
+В качестве `auditable_type` будет использовано имя контроллера, а в качестве `action` — имя экшена ("some_action").

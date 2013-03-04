@@ -1,4 +1,8 @@
 # encoding: utf-8
-ChrnoAudit.setup do |config|
-  config.default_context = { ip: -> { request.remote_addr }}
+ChrnoAudit.configure do |config|
+  # Имя таблицы с событиями
+  # config.table_name = "audit_log"
+
+  # Кодер для сериализации diff'а
+  # config.serializer = ActiveRecord::Coders::YAMLColumn
 end

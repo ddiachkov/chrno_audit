@@ -7,7 +7,7 @@
 
   def history$
     @page = Page.find params[:id]
-    @history = ChrnoAudit::AuditRecord.for_object( @page ).order( "id DESC" )
+    @history = ChrnoAudit::AuditRecord.for_object( @page ).order( "created_at DESC" )
   end
 
 Чтобы подключить модель к системе аудита эту строку необходимо добавить в файл модели:
