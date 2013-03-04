@@ -51,7 +51,7 @@ module ChrnoAudit
         options.reverse_merge! \
           :except  => [],
           :when    => [ :create, :update, :destroy ],
-          :context => ChrnoAudit.default_context
+          :context => ChrnoAudit.config.default_context
 
         # Нормализуем параметры
         options[ :except ] = Array.wrap( options[ :except ] ).map( &:to_s   )

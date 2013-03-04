@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 ##
-# Обсервер записывает изменения моделей в лог.
+# Обзервер записывает изменения моделей в лог.
 #
 class ChrnoAudit::AuditObserver < ActiveRecord::Observer
   # По умолчанию ничего не обозреваем

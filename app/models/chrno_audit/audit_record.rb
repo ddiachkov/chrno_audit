@@ -13,10 +13,10 @@ class ChrnoAudit::AuditRecord < ActiveRecord::Base
   belongs_to :auditable, polymorphic: true
 
   # Изменения
-  serialize :diff, ChrnoAudit.serializer || Object
+  serialize :diff, ChrnoAudit.config.serializer || Object
 
   # Контекст
-  serialize :context, ChrnoAudit.serializer || Object
+  serialize :context, ChrnoAudit.config.serializer || Object
 
   # Возвращает записи для заданного типа сущности.
   scope :for_type, -> *types { where( auditable_type: types.map { |t| t.class.model_name } ) }
