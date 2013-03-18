@@ -64,7 +64,7 @@ module ChrnoAudit
             # Всегда выкидываем timestamp и id.
             column_names - %W{ id created_at updated_at } - options[ :except ]
           else
-            ( fields - options.delete( :except ).map( &:to_s )
+            ( fields - options.delete( :except )).map( &:to_s )
           end
 
         self.auditable_actions = options.delete( :when )
