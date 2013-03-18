@@ -23,6 +23,9 @@ module ChrnoAudit
       #     список действий над моделью (создание, изменение, удаление), при
       #     которых необходим аудит
       #
+      #   @option [true, false] :ignore_empty_diff (true)
+      #     флаг: не записывать данные в базу, если аудируемые поля не изменились
+      #
       # @example
       #     audit :all, :except => :foo
       #
@@ -40,14 +43,15 @@ module ChrnoAudit
         ChrnoAudit::AuditObserver.attach( self )
 
         # Добавляем необходимые параметры
-        cattr_accessor :auditable_fields, :auditable_actions
+        cattr_accessor :auditable_fields, :auditable_actions, :auditable_options
 
         options = fields.extract_options!
 
         # Настройки по умолчанию
         options.reverse_merge! \
-          :except  => [],
-          :when    => [ :create, :update, :destroy ]
+          :except            => [],
+          :when              => [ :create, :update, :destroy ],
+          :ignore_empty_diff => true
 
         # Нормализуем параметры
         options[ :except ] = Array.wrap( options[ :except ] ).map( &:to_s   )
@@ -60,10 +64,11 @@ module ChrnoAudit
             # Всегда выкидываем timestamp и id.
             column_names - %W{ id created_at updated_at } - options[ :except ]
           else
-            ( fields - options[ :except ] ).map( &:to_s )
+            ( fields - options.delete( :except ).map( &:to_s )
           end
 
-        self.auditable_actions = options[ :when ]
+        self.auditable_actions = options.delete( :when )
+        self.auditable_options = options
 
         # Проверки
         Rails.logger.warn "Audit: no fields to audit" if self.auditable_fields.empty?

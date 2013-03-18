@@ -49,7 +49,7 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
     context = get_context.with_indifferent_access
 
     # Ничего не делаем если модель не изменилась
-    return if changes_to_store.empty? and action != :destroy
+    return if entity.class.auditable_options[ :ignore_empty_diff ] && changes_to_store.empty? && action != :destroy
 
     ChrnoAudit::AuditRecord.create do |record|
       record.action    = action.to_s

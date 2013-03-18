@@ -50,11 +50,12 @@ module ChrnoAudit
     # @param [ActiveRecord::Base] initiator инициатор обновления
     #
     def create_audit_record!( context = {}, initiator = nil )
-      ChrnoAudit::AuditRecord.create! \
-        :auditable_type => self.class.name,
-        :action         => request.symbolized_path_parameters[ :action ],
-        :initiator      => initiator,
-        :context        => context
+      ChrnoAudit::AuditRecord.create! do |record|
+        record.auditable_type = self.class.name
+        record.action         = request.symbolized_path_parameters[ :action ]
+        record.initiator      = initiator
+        record.context        = context
+      end
     end
   end
 end
