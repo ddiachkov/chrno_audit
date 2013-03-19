@@ -45,6 +45,8 @@ module ChrnoAudit
     ##
     # Хелпер для создания записи аудита из контроллера.
     # В качестве типа будет использовано имя текущего контоллера, в качестве действия -- текущий экшен.
+    # Если передать блок, то он будет вызван с несохраненной записью в качестве параметра.
+    # Таким образом можно изменить лобые поля записи аудита.
     #
     # @param [Hash] context контекст
     # @param [ActiveRecord::Base] initiator инициатор обновления
@@ -55,6 +57,7 @@ module ChrnoAudit
         record.action         = request.symbolized_path_parameters[ :action ]
         record.initiator      = initiator
         record.context        = context
+        yield record if block_given?
       end
     end
   end
