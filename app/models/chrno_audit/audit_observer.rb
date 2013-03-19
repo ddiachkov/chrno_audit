@@ -32,6 +32,11 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
     create_audit_record! entity, :destroy
   end
 
+  # Создает запись о считывании сущности из базы.
+  def after_find( entity )
+    create_audit_record! entity, :find
+  end
+
   private
 
   ##
@@ -49,7 +54,9 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
     context = get_context.with_indifferent_access
 
     # Ничего не делаем если модель не изменилась
-    return if entity.class.auditable_options[ :ignore_empty_diff ] && changes_to_store.empty? && action != :destroy
+    return if entity.class.auditable_options[ :ignore_empty_diff ] \
+              && changes_to_store.empty? \
+              && [ :destroy, :find ].exclude?( action )
 
     ChrnoAudit::AuditRecord.create do |record|
       record.action    = action.to_s
