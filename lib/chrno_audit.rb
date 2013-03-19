@@ -12,7 +12,7 @@ module ChrnoAudit
   include ActiveSupport::Configurable
 
   class Engine < Rails::Engine
-    initializer "chrno_audit.initialize" do
+    initializer "chrno_audit.initialize", :before => :load_active_support do
       require "chrno_audit/action_controller_concern"
       require "chrno_audit/active_record_concern"
 
