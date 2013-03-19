@@ -48,13 +48,17 @@ module ChrnoAudit
     #
     # @param [Hash] context контекст
     # @param [ActiveRecord::Base] initiator инициатор обновления
+    # @yield [ChrnoAudit::AuditRecord]
     #
-    def create_audit_record!( context = {}, initiator = nil )
+    def create_audit_record!( context = {}, initiator = nil, &block )
       ChrnoAudit::AuditRecord.create! do |record|
         record.auditable_type = self.class.name
         record.action         = request.symbolized_path_parameters[ :action ]
         record.initiator      = initiator
         record.context        = context
+
+        # Даём возможность переопределить параметры
+        block.call( record ) if block
       end
     end
   end
