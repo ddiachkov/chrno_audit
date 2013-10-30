@@ -3,6 +3,11 @@ if Rails.version.to_i >= 4
   # В четвёртых рельсах обзерверы вынесены в джем
   gem "rails-observers", "~> 0.1.1"
   require "rails-observers"
+
+  # Хак для eager load: по умолчанию класс ActiveRecord::Observer грузится ПОСЛЕ
+  # того грузятся модели из app/models при eager_load = true, что приводит к ошибке
+  # если рядом с моделями лежат обзервере. Поэтому грузим определение класса сразу.
+  require "rails/observers/activerecord/active_record"
 end
 
 require "active_support/configurable"
