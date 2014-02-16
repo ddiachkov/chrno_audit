@@ -32,7 +32,7 @@ module ChrnoAudit
       def audit( *fields )
         # Если таблицы ещё нет, ничего не делаем (полезно для миграций)
         unless table_exists?
-          Rails.logger.warn "Audit: try to audit model [#{name}] with non-existent table"
+          self.logger.warn "Audit: try to audit model [#{name}] with non-existent table" if self.logger
           return
         end
 
@@ -71,8 +71,10 @@ module ChrnoAudit
         self.auditable_options = options
 
         # Проверки
-        Rails.logger.warn "Audit: no fields to audit" if self.auditable_fields.empty?
-        Rails.logger.warn "Audit: no actions to audit" if self.auditable_actions.empty?
+        if self.logger
+          self.logger.warn "Audit: no fields to audit" if self.auditable_fields.empty?
+          self.logger.warn "Audit: no actions to audit" if self.auditable_actions.empty?
+        end
       end
     end
   end

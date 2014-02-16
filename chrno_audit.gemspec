@@ -15,6 +15,5 @@ Gem::Specification.new do |s|
 
   s.required_ruby_version = ">= 1.9.3"
 
-  s.add_runtime_dependency "rails", ">= 3.1"
   s.add_runtime_dependency "activerecord", ">= 3.1"
 end
