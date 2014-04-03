@@ -5,7 +5,7 @@
 #
 class ChrnoAudit::AuditRecord < ActiveRecord::Base
   # Имя таблицы с логами
-  self.table_name = ChrnoAudit.config.table_name || "audit_log"
+  self.table_name = "audit_log"
 
   # Кто изменил?
   belongs_to :initiator, :polymorphic => true
@@ -14,10 +14,10 @@ class ChrnoAudit::AuditRecord < ActiveRecord::Base
   belongs_to :auditable, :polymorphic => true
 
   # Изменения
-  serialize :diff, ChrnoAudit.config.serializer || Object
+  serialize :diff
 
   # Контекст
-  serialize :context, ChrnoAudit.config.serializer || Object
+  serialize :context
 
   # Возвращает записи для заданного типа сущности.
   scope :for_type, -> *types { where( auditable_type: types.map { |t| t.class.model_name })}

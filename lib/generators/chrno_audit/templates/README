@@ -5,7 +5,7 @@
 
 Вот пример кода, который может использоваться в контроллере:
 
-  def history$
+  def history
     @page = Page.find params[:id]
     @history = ChrnoAudit::AuditRecord.for_object( @page ).order( "created_at DESC" )
   end
