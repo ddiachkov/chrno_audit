@@ -14,10 +14,10 @@ class ChrnoAudit::AuditRecord < ActiveRecord::Base
   belongs_to :auditable, :polymorphic => true
 
   # Изменения
-  serialize :diff unless columns_hash[ "diff" ].type == :json
+  serialize :diff
 
   # Контекст
-  serialize :context unless columns_hash[ "context" ].type == :json
+  serialize :context
 
   # Возвращает записи для заданного типа сущности.
   scope :for_type, -> *types { where( auditable_type: types.map { |t| t.class.model_name })}
