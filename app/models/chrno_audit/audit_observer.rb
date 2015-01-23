@@ -40,7 +40,7 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
   # @param [ActiveRecord::Base] entity
   # @param [#to_s] action
   #
-  def create_audit_record!( entity, action )
+  def create_audit_record!( entity, action, params = {} )
     # Ничего не делаем, если аудит данного действия отключён
     return unless entity.class.auditable_actions.include? action
 
@@ -51,13 +51,16 @@ class ChrnoAudit::AuditObserver < ActiveRecord::Observer
     # Ничего не делаем если модель не изменилась
     return if entity.class.auditable_options[ :ignore_empty_diff ] && changes_to_store.empty? && action != :destroy
 
-    ChrnoAudit::AuditRecord.create do |record|
+    audit_record = ChrnoAudit::AuditRecord.new do |record|
       record.action    = action.to_s
       record.auditable = entity
       record.diff      = changes_to_store
       record.initiator = context.delete( :initiator ) || context.delete( :current_user )
       record.context   = context
     end
+    
+    audit_record.save! unless params[:nosave]
+    audit_record
   end
 
   ##
